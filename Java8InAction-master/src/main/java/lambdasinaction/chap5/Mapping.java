@@ -22,6 +22,11 @@ public class Mapping{
                                          .map(String::length)
                                          .collect(toList());
         System.out.println(wordLengths);
+        // Map
+        final List<String> collect = words.stream()
+                .flatMap((String line) -> Arrays.stream(line.split("")))
+                .distinct()
+                .collect(toList());
 
         // flatMap
         words.stream()
