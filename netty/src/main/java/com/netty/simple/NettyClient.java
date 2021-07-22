@@ -22,7 +22,7 @@ public class NettyClient {
                         }
                     });
             System.err.println("客户端 is ok");
-            final ChannelFuture cf = bootstrap.connect("127.0.0.1", 8888).sync();
+            final ChannelFuture cf = bootstrap.connect("127.0.0.1", 9099).sync();
             //给关闭通道进行监听
             cf.channel().closeFuture().sync();
         } catch (InterruptedException e) {

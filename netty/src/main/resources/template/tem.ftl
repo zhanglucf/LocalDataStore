@@ -307,9 +307,9 @@
                                 <w:rPr>
                                     <w:rFonts w:hint="eastAsia"/>
                                 </w:rPr>
-                                <w:t>${article.topic}</w:t>
+                                <w:t>${a
+                                    </w:p>rticle.topic}</w:t>
                             </w:r>
-                        </w:p>
 <#--                        <w:p w:rsidR="00216040" w:rsidRDefault="00A17ED5" w:rsidP="001569FB">-->
 <#--                            <w:r>-->
 <#--                                <w:rPr>-->

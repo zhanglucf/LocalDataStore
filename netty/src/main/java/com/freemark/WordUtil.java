@@ -86,10 +86,10 @@ public class WordUtil {
     }
 
     public static void main(String[] args) throws Exception {
-//        WordUtil.generateWord(getWordData(),"tem.ftl","专家组评审.doc");
+        WordUtil.generateWord(getWordData(),"tem.ftl","专家组评审.doc");
 //        WordUtil.generateWord(getWordData2(),"table.ftl","动态创建表格.doc");
 //        WordUtil.generateWord(getWordData3(),"if.ftl","if.doc");
-        WordUtil.generateWord(getWordData4(),"if_list.ftl","if_list.doc");
+//        WordUtil.generateWord(getWordData4(),"if_list.ftl","if_list.doc");
     }
 }
 
