@@ -8,14 +8,17 @@ public interface Compare<T> {
     int compareTo(T t);
 }
 
-class Parent implements Compare<Parent>{
+class Sup{}
+class Parent extends Sup implements Compare<Sup>{
     @Override
-    public int compareTo(Parent aaa) {
+    public int compareTo(Sup aaa) {
         return 0;
     }
 }
 
-class Sub extends Parent {}
+
+class Sub extends Parent {
+}
 
 class Parent2 implements Compare<Parent2 >{
     @Override
@@ -46,7 +49,7 @@ class CompareTest {
     }
 
 
-    public static <T extends Compare<? super T>> int method5(List<T> list, T t2) {
+    public static <T extends Compare<? super T>> int method5(List<? extends T> list, T t2) {
 
         CompareTest.method5(new ArrayList<Parent>(),new Parent());
         CompareTest.method5(new ArrayList<Parent>(),new Sub());//多态

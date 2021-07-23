@@ -20,7 +20,6 @@ public class Collector_ {
 //                .collect(() -> new CustomizeList(), (m, n) -> m.add(n), (m1, m2) -> m1.addAl(m2));
                 .collect(CustomizeList<String>::new, CustomizeList::add, CustomizeList::addAll);
 //        System.out.println(collect);
-
         final ArrayList<String> of = strings.stream()
                 .collect(java.util.stream.Collector.of(
                         ArrayList::new,
