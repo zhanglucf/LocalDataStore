@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.IntStream;
 
 public class CommandCenter {
     final static Random random = new Random();
@@ -46,7 +45,7 @@ public class CommandCenter {
 
         new Thread(() -> {
             while (true) {
-                ThreadUtil.sleepSeconds(1);
+                ThreadUtil.sleepMicroseconds(100);
                 Map.get(random.nextInt(28) + 1).addAndGet(1);
             }
         }).start();
