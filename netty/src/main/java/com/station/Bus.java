@@ -43,6 +43,7 @@ public class Bus {
     //乘客上车
     public void getOnTheBus(int passengerCount) {
         ThreadUtil.sleepSeconds(passengerCount);
+        this.passengerCounter.addAndGet(passengerCount);
     }
 
     //乘客上车
@@ -52,14 +53,13 @@ public class Bus {
             if (station.passengerCounter.get() + this.passengerCounter.get() > PASSENGER_COUNT_MAX) {
                 int canTakeMax = PASSENGER_COUNT_MAX - this.passengerCounter.get();
                 getOnTheBus(canTakeMax);
-                System.out.println("上车" + canTakeMax + "人");
-                this.passengerCounter.addAndGet(canTakeMax);
-
+                System.out.print("上客" + canTakeMax + "人 ");
+                station.decrementAndGet(canTakeMax);
             } else {
                 //站台人全部拉走
                 getOnTheBus(station.passengerCounter.get());
-                System.out.println("上车" + station.passengerCounter.get() + "人");
-                this.passengerCounter.addAndGet(station.passengerCounter.get());
+                System.out.print("上客" + station.passengerCounter.get() + "人 ");
+                station.decrementAndGet(station.passengerCounter.get());
             }
         }
     }
@@ -70,30 +70,57 @@ public class Bus {
             ThreadUtil.sleepSeconds(passengerCount);
             for (int i = 0; i < passengerCount; i++) {
                 this.getPassengerCounter().decrementAndGet();
-                System.out.println("下车1人");
             }
+            System.out.print("下客" + passengerCount + "人 ");
         }
     }
 
-    public void run(){
-        while (true){
-            for (int i = 1; i <= 28; i++) {
+    //模拟Bus从一站 到 下一站
+    public synchronized void stationToStaion(Station station) {
+        System.out.println(TimeUtil.getCurrentTimeStr() + " 继续出发 车上有乘客" + this.passengerCounter + "人");
+//            System.out.print(this);
+        int i = ((station.getNextStationId() > 15) ? (30 - station.getNextStationId()) : +station.getNextStationId());
+        String stationNum = String.format("%02d", i);
+        ThreadUtil.sleepSeconds(station.getNextStationIdTimeDuration());
+        System.out.println(TimeUtil.getCurrentTimeStr() + " 到达" + stationNum + "站");
+    }
+
+    public void getOffAll(Station station) {
+        if ((station.getStationId() == 15 && station.getNextStationId() == 16)
+                || (station.getStationId() == 28 && station.getNextStationId() == 1)) {
+            int i = this.getPassengerCounter().get();
+            getOffTheBus(i);
+            //下车的乘客 还需要继续乘车
+            station.addAndGet(i);
+            System.out.println("到达终点，所有乘客下车");
+        }
+    }
+
+    public void run() {
+        boolean flag = true;
+        while (true) {
+            for (int i = this.stationId; i <= this.stationId + 27; i++) {
+                if (flag && i == 1) {
+                    flag = false;
+                    System.out.println("从01站台出发");
+                }else if (flag && i == 15){
+                    flag = false;
+                    System.out.println("从15站台出发");
+                }
                 final int passengerCountOfThisBuss = this.getPassengerCounter().get();
                 final int passengergetOffTheBusCountOfThisBuss = CommandCenter.random.nextInt(passengerCountOfThisBuss + 1);
+                getOffAll(CommandCenter.Map.get(i));
                 this.getOffTheBus(passengergetOffTheBusCountOfThisBuss);
                 this.setStationId(i);
                 this.getOnTheBus(CommandCenter.Map.get(i));
-                System.out.println(this);
+//                System.out.print(this);
+                stationToStaion(CommandCenter.Map.get(i));
             }
         }
     }
 
     @Override
     public String toString() {
-        return "Bus{" +
-                "busId=" + busId +
-                "Bus上" + getPassengerCounter() +
-                "人, stationId=" + CommandCenter.Map.get(stationId) +
-                '}';
+        return " 车上有" + getPassengerCounter() + "人";
     }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 public class CommandCenter {
     final static Random random = new Random();
@@ -24,10 +24,11 @@ public class CommandCenter {
             put(12, new Station(12, 13, random.nextInt(6) + 3));
             put(13, new Station(13, 14, random.nextInt(6) + 3));
             put(14, new Station(14, 15, random.nextInt(6) + 3));
+
             put(15, new Station(15, 16, random.nextInt(6) + 3));
             put(16, new Station(16, 17, random.nextInt(6) + 3));
             put(17, new Station(17, 18, random.nextInt(6) + 3));
-            put(18, new Station(18, 18, random.nextInt(6) + 3));
+            put(18, new Station(18, 19, random.nextInt(6) + 3));
             put(19, new Station(19, 20, random.nextInt(6) + 3));
             put(20, new Station(20, 21, random.nextInt(6) + 3));
             put(21, new Station(21, 22, random.nextInt(6) + 3));
@@ -41,23 +42,58 @@ public class CommandCenter {
         }
     };
 
-    public void method() {
-
+    /**
+     * 模拟10辆Bus的运行
+     */
+    public void runAllBus() {
+        //单独启的一个线程，模拟随机向各个站台加乘客
         new Thread(() -> {
             while (true) {
-                ThreadUtil.sleepMicroseconds(100);
+                ThreadUtil.sleepSeconds(1);
                 Map.get(random.nextInt(28) + 1).addAndGet(1);
             }
         }).start();
 
-        final List<Bus> buses = new ArrayList<>();
+        ExecutorService threadPool = new ThreadPoolExecutor(5, 10,
+                1L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(5),
+                Executors.defaultThreadFactory(),
+                new ThreadPoolExecutor.AbortPolicy());
 
         for (int i = 1; i <= 5; i++) {
-           new Thread( new Bus(i , 1)::run).start();
+            int finalI = i;
+            threadPool.execute(() -> new Bus(finalI, 1).run());
+            //用sleep 15秒 模拟15分钟出发一辆车
+            ThreadUtil.sleepSeconds(15);
+        }
+
+        for (int i = 6; i <= 10; i++) {
+            int finalI = i;
+            threadPool.execute(new Bus(finalI, 15)::run);
+            //用sleep 15秒 模拟15分钟出发一辆车
+            ThreadUtil.sleepSeconds(15);
         }
     }
 
+    /**
+     * 因为method()方法中所有bus都运行的时候，控制台输出比例混乱，这个方法只是为了简单看一台bus运行轨迹
+     */
+    public void runOneBus() {
+        //单独启的一个线程，模拟随机向各个站台加乘客
+        new Thread(() -> {
+            while (true) {
+                ThreadUtil.sleepSeconds(1);
+                Map.get(random.nextInt(28) + 1).addAndGet(1);
+            }
+        }).start();
+
+        new Thread(new Bus(1, 1)::run).start();
+    }
+
     public static void main(String[] args) {
-       new CommandCenter().method();
+//        new CommandCenter().runAllBus();
+        new CommandCenter().runOneBus();
+        ThreadUtil.sleepSeconds(300*60);
+        System.exit(0);
     }
 }

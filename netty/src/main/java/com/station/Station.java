@@ -20,10 +20,10 @@ public class Station {
         return passengerCounter.addAndGet(addCount);
     }
 
-    public int decrementAndGet(int addCount) {
+    public int decrementAndGet(int decrement) {
         int counter = 0;
         synchronized (this) {
-            for (int i = 0; i < addCount; i++) {
+            for (int i = 0; i < decrement; i++) {
                 counter = passengerCounter.decrementAndGet();
             }
         }
@@ -45,10 +45,43 @@ public class Station {
     @Override
     public String toString() {
         if (stationId > 15) {
-            return "这是" + (stationId % 15) + "号站台  下一站是" + (nextStationId % 15) + "号站台";
+//            return "这是" + (stationId % 15) + "号站台  下一站是" + (nextStationId % 15) + "号站台";
+            return "这是" + (30 - stationId) + "号站台  下一站是" + (30 - stationId) + "号站台";
         } else {
-            return "这是" + stationId + "号站台 下一站是" + (nextStationId>15? (nextStationId % 15):nextStationId) + "号站台";
+            return "这是" + stationId + "号站台 下一站是" + (nextStationId>15? (30 - nextStationId):nextStationId) + "号站台";
         }
+    }
+
+    public int getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(int stationId) {
+        this.stationId = stationId;
+    }
+
+    public int getNextStationId() {
+        return nextStationId;
+    }
+
+    public void setNextStationId(int nextStationId) {
+        this.nextStationId = nextStationId;
+    }
+
+    public int getNextStationIdTimeDuration() {
+        return nextStationIdTimeDuration;
+    }
+
+    public void setNextStationIdTimeDuration(int nextStationIdTimeDuration) {
+        this.nextStationIdTimeDuration = nextStationIdTimeDuration;
+    }
+
+    public AtomicInteger getPassengerCounter() {
+        return passengerCounter;
+    }
+
+    public void setPassengerCounter(AtomicInteger passengerCounter) {
+        this.passengerCounter = passengerCounter;
     }
 
     public static void main(String[] args) {
